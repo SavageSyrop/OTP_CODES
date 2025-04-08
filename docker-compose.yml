@@ -1,0 +1,29 @@
+version: '3.1'
+
+volumes:
+  db-data-otp:
+    driver: local
+
+services:
+  otpdb:
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - PGUSER=desertfox
+      - POSTGRES_USER=desertfox
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=otpData
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_INITDB_ARGS=--auth-host=trust
+    volumes:
+      - db-data-otp:/var/lib/postgresql/data
+  app:
+    container_name: otp
+    image: otp
+    build: ./
+    ports:
+      - "8089:8089"
+    depends_on:
+      - otpdb
