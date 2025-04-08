@@ -16,5 +16,5 @@ public class AuthorizationDTO {
     private String password;
 
     @Email
-    private String username;
+    private String email;
 }

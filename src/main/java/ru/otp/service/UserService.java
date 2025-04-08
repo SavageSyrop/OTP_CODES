@@ -12,13 +12,5 @@ public interface UserService extends UserDetailsService {
 
     User saveNewUser(String username, String password) throws Exception;
 
-    void activateUser(String code);
-
-    User initPasswordReset(String username) throws Exception;
-
-    void resetPassword(String code, String newPassword);
-
     void validateIfUserCanBeAuthorized(UserPrincipal userPrincipal);
-
-    User update(User user);
 }

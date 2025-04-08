@@ -12,5 +12,4 @@ public interface UserDao extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
 
     Optional<User> findByResetPasswordCode(String code);
-
 }

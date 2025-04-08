@@ -10,6 +10,8 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AuthorizationServiceException;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.otp.dto.AuthorizationDTO;
 import ru.otp.dto.JwtResponse;
 import ru.otp.entities.UserPrincipal;
-import ru.otp.enums.JWTConstants;
 import ru.otp.security.JwtTokenProvider;
 import ru.otp.service.UserService;
 
@@ -41,6 +42,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+
+    @PostAuthorize("returnObject.requiredScope=='PUBLIC' || hasAuthority(returnObject.requiredScope) || returnObject.currentUserIsOwner")
+    @PreAuthorize("hasAuthority('USER')")
     @PostMapping("/login")
     public void login(@RequestBody AuthorizationDTO authorizationDTO, HttpServletResponse httpServletResponse) throws JsonProcessingException {
         UserPrincipal user = (UserPrincipal) userService.loadUserByUsername(authorizationDTO.getUsername());

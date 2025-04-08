@@ -7,9 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import ru.otp.dao.RoleDao;
 import ru.otp.dao.UserDao;
-import ru.otp.entities.Role;
 import ru.otp.entities.User;
 import ru.otp.entities.UserPrincipal;
 import ru.otp.enums.RoleType;
@@ -22,9 +20,6 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserDao userDao;
-
-    @Autowired
-    private RoleDao roleDao;
 
     @Autowired
     private MailService mailService;
@@ -69,42 +64,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void activateUser(String code) {
-        Optional<User> user = userDao.findUserByActivationCode(code);
-        if (user.isEmpty()) {
-            throw new EntityNotFoundException("User not found");
-        }
-        User userEntity = user.get();
-        userEntity.setActivationCode(null);
-        userDao.save(userEntity);
-    }
-
-    @Transactional
-    @Override
-    public User initPasswordReset(String username) throws Exception {
-        UserPrincipal userPrincipal = (UserPrincipal) loadUserByUsername(username);
-        User user = userPrincipal.getUser();
-        user.setResetPasswordCode(UUID.randomUUID().toString());
-        user = userDao.save(user);
-        mailService.sendActivationEmail(user);
-        return user;
-    }
-
-    @Override
-    public void resetPassword(String code, String newPassword) {
-        Optional<User> userOptional = userDao.findByResetPasswordCode(code);
-        if (userOptional.isEmpty()) {
-            throw new EntityNotFoundException("User not found");
-        }
-        User user = userOptional.get();
-        user.setPassword(Hashing.sha256()
-                .hashString(newPassword, StandardCharsets.UTF_8)
-                .toString());
-        user.setResetPasswordCode(null);
-        userDao.save(user);
-    }
-
-    @Override
     public void validateIfUserCanBeAuthorized(UserPrincipal userPrincipal) {
         if (!userPrincipal.isAccountNonLocked()) {
             throw new AuthorizationServiceException("You are banned from this server!");
@@ -113,10 +72,5 @@ public class UserServiceImpl implements UserService {
             throw new AuthorizationServiceException("Account is not activated. Check email!");
 
         }
-    }
-
-    @Override
-    public User update(User user) {
-        return userDao.save(user);
     }
 }

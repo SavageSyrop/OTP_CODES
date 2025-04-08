@@ -1,35 +1,61 @@
 create table users
 (
     id                  BIGSERIAL           NOT NULL,
-    username            VARCHAR(128) unique not null,
+    email               VARCHAR(128) unique not null,
+    phone_number        VARCHAR(128) unique not null,
+    tg_id               VARCHAR(128) unique not null,
     password            VARCHAR(128)        not null,
-    activation_code     varchar(128),
-    reset_password_code varchar(128),
+    role                VARCHAR(128)        not null,
     CONSTRAINT users_pk primary key (id)
 );
 
-CREATE TABLE roles
+
+create or replace function check_single_admin()
+RETURNS trigger AS $$
+begin
+    -- Проверяем количество записей в таблице
+    if (select count(*) from users where role = 'ADMIN') >= 1 then
+        raise exception 'Таблица может содержать только одну запись админа';
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+create trigger enforce_single_record_admin
+before insert or update on users
+for each row EXECUTE function check_single_admin();
+
+create TABLE otp_config
 (
-    id      BIGSERIAL    NOT NULL,
-    name    VARCHAR(128) NOT NULL,
+    config_version      VARCHAR(128) unique not null,
+    otp_code_length      bigint not null,
+    exipes_after_millis  bigint not null,
+    CONSTRAINT otp_config_pk primary key (config_version)
+);
+
+create or replace function check_single_config()
+RETURNS trigger AS $$
+begin
+    -- Проверяем количество записей в таблице
+    if (select count(*) from otp_config) >= 1 then
+        raise exception 'Таблица может содержать только одну запись конфига';
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+create trigger enforce_single_record_config
+before insert or update on otp_config
+for each row EXECUTE function check_single_config();
+
+create table otp_codes
+(
+    id                  BIGSERIAL           NOT NULL,
+    otp_code            VARCHAR(128) unique not null,
+    otp_code_status     VARCHAR(128)        not null,
     user_id bigint REFERENCES users (id) on delete cascade,
-    CONSTRAINT roles_pk PRIMARY KEY (id)
+    CONSTRAINT otp_codes_pk primary key (id)
 );
 
-create table info_cards
-(
-    unique_code VARCHAR(128) unique not null,
-    user_id     bigint              not null references users (id),
-    title       VARCHAR(64)         not null,
-    object_type varchar(32) not null,
-    required_scope varchar(32) not null,
-    info        VARCHAR(255),
-    CONSTRAINT info_cards_pk primary key (unique_code)
-);
-
-create table info_cards_images
-(
-    image_path     varchar(255) not null,
-    info_card_uuid varchar(128) references info_cards (unique_code) on delete cascade,
-    CONSTRAINT info_cards_images_pk primary key (image_path)
-);

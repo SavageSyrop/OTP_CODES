@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.otp.dto.UserDto;
-import ru.otp.entities.Role;
 import ru.otp.entities.User;
 import ru.otp.service.UserService;
 

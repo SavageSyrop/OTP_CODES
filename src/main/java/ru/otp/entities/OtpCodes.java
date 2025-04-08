@@ -1,32 +1,25 @@
 package ru.otp.entities;
 
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import ru.otp.enums.RoleType;
 
 @Entity
-@Table(name = "users")
+@Table(name = "otp_codes")
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
-public class User extends AbstractEntity implements Indexable<Long> {
-
+public class OtpCodes extends AbstractEntity implements Indexable<Long>{
     @Column
-    private String email;
+    private String otpCode;
     @Column
-    private String phoneNumber;
-    @Column
-    private String tgId;
-    @Column
-    private String password;
-    @Enumerated(EnumType.STRING)
-    @Column
-    private RoleType role;
+    private String otpCodeStatus;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Override
     public void setIndex(Long index) {

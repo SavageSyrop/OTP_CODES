@@ -17,10 +17,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import ru.otp.dto.JwtResponse;
-import ru.otp.entities.Role;
 import ru.otp.entities.User;
 import ru.otp.entities.UserPrincipal;
-import ru.otp.enums.JWTConstants;
 import ru.otp.service.UserService;
 
 import javax.crypto.SecretKey;
@@ -51,14 +49,14 @@ public class JwtTokenProvider {
         this.refreshKey = Keys.hmacShaKeyFor(jwtProperties.getRefreshSecretKey().getBytes());
     }
 
-    private String createAccessToken(Long userId, String username, List<Role> roles) {
+    private String createAccessToken(Long userId, String username, String role) {
         Date now = new Date();
         Date expiration = new Date(now.getTime() + jwtProperties.getAccessTokenDuration());
 
         Claims claims = Jwts.claims()
                 .subject(username)
                 .id(userId.toString())
-                .add("scope", resolveRoles(roles))
+                .add("scope", role)
                 .build();
         return jwtProperties.getTokenPrefix() + Jwts.builder().claims(claims)
                 .issuedAt(now)
@@ -124,7 +122,7 @@ public class JwtTokenProvider {
         jwtResponse.setId(user.getUser().getId());
         jwtResponse.setUsername(user.getUsername());
         jwtResponse.setAccessToken(createAccessToken(
-                user.getUser().getId(), user.getUsername(), user.getUser().getRoles())
+                user.getUser().getId(), user.getUsername(), user.getUser().getRole().name())
         );
         jwtResponse.setRefreshToken(createRefreshToken(
                 user.getUser().getId(), user.getUsername())
@@ -155,9 +153,5 @@ public class JwtTokenProvider {
                 .verifyWith((SecretKey) key)
                 .build()
                 .parseSignedClaims(token).getPayload().getSubject();
-    }
-
-    private List<String> resolveRoles(List<Role> roles) {
-        return roles.stream().map(r -> r.getName().name()).collect(Collectors.toList());
     }
 }

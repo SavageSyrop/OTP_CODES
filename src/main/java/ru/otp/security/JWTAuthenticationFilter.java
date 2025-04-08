@@ -13,7 +13,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.util.AntPathMatcher;
 import ru.otp.dto.JwtResponse;
-import ru.otp.enums.JWTConstants;
 
 import java.io.IOException;
 import java.net.URLDecoder;

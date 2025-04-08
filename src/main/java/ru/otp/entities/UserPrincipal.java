@@ -19,9 +19,7 @@ public class UserPrincipal implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
-        for (Role role : user.getRoles()) {
-            authorities.add(new SimpleGrantedAuthority(role.getName().name()));
-        }
+        authorities.add(new SimpleGrantedAuthority(user.getRole().name()));
         return authorities;
     }
 
@@ -32,7 +30,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return user.getEmail();
     }
 
     @Override
@@ -42,7 +40,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return !getUser().getIsBanned();
+        return true;
     }
 
     @Override
@@ -52,7 +50,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return user.getActivationCode() == null;
+        return true;
     }
 
     public User getUser() {
