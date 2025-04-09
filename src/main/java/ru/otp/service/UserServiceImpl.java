@@ -1,10 +1,8 @@
 package ru.otp.service;
 
-import com.google.common.hash.Hashing;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import ru.otp.dao.UserDao;
@@ -12,9 +10,7 @@ import ru.otp.entities.User;
 import ru.otp.entities.UserPrincipal;
 import ru.otp.enums.RoleType;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Optional;
-import java.util.UUID;
 
 @Component
 public class UserServiceImpl implements UserService {
@@ -44,33 +40,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User saveNewUser(String username, String password) throws Exception {
-        User user = new User();
-        user.setUsername(username);
-
-        user.setPassword(Hashing.sha256()
-                .hashString(password, StandardCharsets.UTF_8)
-                .toString());
-        user.setActivationCode(UUID.randomUUID().toString());
-        user.setIsBanned(false);
-        user = userDao.save(user);
-
-        Role role = new Role();
-        role.setName(RoleType.USER);
-        role.setUserId(user.getId());
-        roleDao.save(role);
-        mailService.sendActivationEmail(user);
+    public User saveNewUser(User user) throws Exception {
+        userDao.save(user);
         return user;
     }
 
     @Override
-    public void validateIfUserCanBeAuthorized(UserPrincipal userPrincipal) {
-        if (!userPrincipal.isAccountNonLocked()) {
-            throw new AuthorizationServiceException("You are banned from this server!");
-        }
-        if (!userPrincipal.isEnabled()) {
-            throw new AuthorizationServiceException("Account is not activated. Check email!");
-
-        }
+    public boolean adminAlreadyRegistered() {
+        Optional<User> admin = userDao.findFirstByRole(RoleType.ADMIN.name());
+        return !admin.isEmpty();
     }
 }

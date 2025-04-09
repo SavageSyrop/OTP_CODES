@@ -4,7 +4,6 @@ package ru.otp.security;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -44,8 +43,6 @@ public class WebSecurityConfiguration {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    @Value("${app.base.url}")
-    private String baseUrl;
 
     @Bean
     public AuthenticationManager authenticationManager() throws Exception {
@@ -92,8 +89,7 @@ public class WebSecurityConfiguration {
                                                     .write(exception.getMessage());
                                         }))
                 .authorizeHttpRequests(configurer ->
-                        configurer.requestMatchers("/swagger-ui/*", "/swagger-ui/", "/v2/api-docs", "/", "/swagger-ui/index.html", "/v3/api-docs/**",
-                                        "/api/v1/user/**", "/api/v1/cards/*", "/api/v1/cards/*/image", "/api/v1/cards/*/qr").permitAll()
+                        configurer.requestMatchers("/", "/api/v1/user/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JWTAuthenticationFilter(authenticationManager(), jwtProperties, jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
@@ -105,7 +101,7 @@ public class WebSecurityConfiguration {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         //Make the below setting as * to allow connection from any hos
-        corsConfiguration.setAllowedOrigins(List.of(baseUrl, baseUrl+"/", "https://212.109.199.238/", "https://212.109.199.238" ,"https://localhost:4200", "https://192.168.1.28:4200/"));  // change to localhost
+//        corsConfiguration.setAllowedOrigins(List.of(baseUrl, baseUrl+"/", "https://212.109.199.238/", "https://212.109.199.238" ,"https://localhost:4200", "https://192.168.1.28:4200/"));  // change to localhost
         corsConfiguration.setAllowedMethods(List.of("GET", "OPTIONS", "POST", "DELETE"));
         corsConfiguration.setAllowedHeaders(List.of("*"));
         corsConfiguration.setAllowCredentials(true);

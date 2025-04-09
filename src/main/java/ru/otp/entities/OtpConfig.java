@@ -18,7 +18,7 @@ public class OtpConfig implements Indexable<String> {
     @Column
     private String configVersion;
     @Column
-    private Long otpCodeLenth;
+    private Long otpCodeLength;
     @Column
     private Long exipesAfterMillis;
 

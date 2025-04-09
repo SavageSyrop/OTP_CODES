@@ -77,13 +77,6 @@ public class ControllerAdviceExceptionHandler {
         return new ExceptionBody(e.getMessage());
     }
 
-    @ExceptionHandler(FileUploadException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionBody handleImageUpload(FileUploadException e) {
-        log.warn(e.toString());
-        return new ExceptionBody(e.getMessage());
-    }
-
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ExceptionBody handleException(Exception e) {
