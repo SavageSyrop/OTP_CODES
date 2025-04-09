@@ -15,7 +15,6 @@ public class FlywayInitializer {
     @Value("${flyway.password}")
     private String password;
 
-
     public void initialize() {
         Flyway.configure()
                 .dataSource(

@@ -10,6 +10,7 @@ import ru.otp.entities.User;
 import ru.otp.entities.UserPrincipal;
 import ru.otp.enums.RoleType;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -27,6 +28,11 @@ public class UserServiceImpl implements UserService {
             throw new EntityNotFoundException(username);
         }
         return new UserPrincipal(user.get());
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        userDao.deleteById(id);
     }
 
     @Override
@@ -49,5 +55,10 @@ public class UserServiceImpl implements UserService {
     public boolean adminAlreadyRegistered() {
         Optional<User> admin = userDao.findFirstByRole(RoleType.ADMIN.name());
         return !admin.isEmpty();
+    }
+
+    @Override
+    public List<User> getAll() {
+        return userDao.findAll();
     }
 }

@@ -14,21 +14,21 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-public class OtpConfig implements Indexable<String> {
+public class OtpConfig implements Indexable<Long> {
     @Column
-    private String configVersion;
+    private Long configVersion;
     @Column
     private Long otpCodeLength;
     @Column
     private Long exipesAfterMillis;
 
     @Override
-    public void setIndex(String index) {
+    public void setIndex(Long index) {
         setConfigVersion(index);
     }
 
     @Override
-    public String getIndex() {
+    public Long getIndex() {
         return getConfigVersion();
     }
 }

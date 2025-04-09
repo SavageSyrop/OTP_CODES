@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import ru.otp.enums.OtpStatus;
 
 @Entity
 @Table(name = "otp_codes")
@@ -15,8 +16,9 @@ import lombok.ToString;
 public class OtpCodes extends AbstractEntity implements Indexable<Long>{
     @Column
     private String otpCode;
+    @Enumerated(EnumType.STRING)
     @Column
-    private String otpCodeStatus;
+    private OtpStatus otpCodeStatus;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;

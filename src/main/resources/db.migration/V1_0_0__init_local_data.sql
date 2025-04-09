@@ -28,7 +28,7 @@ for each row EXECUTE function check_single_admin();
 
 create TABLE otp_config
 (
-    config_version      VARCHAR(128) unique not null,
+    config_version      BIGSERIAL           NOT NULL,
     otp_code_length      bigint not null,
     exipes_after_millis  bigint not null,
     CONSTRAINT otp_config_pk primary key (config_version)

@@ -1,28 +1,19 @@
 package ru.otp.controller;
 
-import io.minio.errors.ErrorResponseException;
-import io.minio.errors.InsufficientDataException;
-import io.minio.errors.InternalException;
-import io.minio.errors.InvalidResponseException;
-import io.minio.errors.ServerException;
-import io.minio.errors.XmlParserException;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.expression.ParseException;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import ru.otp.dto.OtpConfigDTO;
+import ru.otp.dto.UserDTO;
+import ru.otp.entities.OtpConfig;
 import ru.otp.entities.User;
+import ru.otp.service.OtpService;
 import ru.otp.service.UserService;
 
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,5 +27,51 @@ public class AdminController {
     private UserService userService;
 
     @Autowired
+    private OtpService otpService;
+
+    @Autowired
     private ModelMapper modelMapper;
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/config}")
+    public void editConfig(@RequestBody OtpConfigDTO dto, HttpServletResponse httpServletResponse) {
+        OtpConfig oldConfig = otpService.getConfig();
+        OtpConfig newConfig = new OtpConfig();
+
+        if (dto.getOtpCodeLength() == null) {
+            newConfig.setOtpCodeLength(oldConfig.getOtpCodeLength());
+        } else {
+            newConfig.setOtpCodeLength(dto.getOtpCodeLength());
+        }
+        if (dto.getExipesAfterMillis() == null) {
+            newConfig.setOtpCodeLength(oldConfig.getExipesAfterMillis());
+        } else {
+            newConfig.setOtpCodeLength(dto.getExipesAfterMillis());
+        }
+        otpService.deleteConfig(oldConfig);
+        otpService.save(newConfig);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @DeleteMapping("/getAllUsers}")
+    public List<UserDTO> getAllUsers(HttpServletResponse httpServletResponse) {
+        List<User> users = userService.getAll();
+        List<UserDTO> userDTOS = new ArrayList<>();
+        for (User user: users) {
+            userDTOS.add(convertToDto(user));
+        }
+        httpServletResponse.setStatus(200);
+        return userDTOS;
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @DeleteMapping("/{userId}")
+    public void deleteUser(@PathVariable Long userId, HttpServletResponse httpServletResponse) {
+        User user = userService.getById(userId);
+        userService.deleteById(userId);
+    }
+
+    private UserDTO convertToDto(User user) throws ParseException {
+        return modelMapper.map(user, UserDTO.class);
+    }
 }
