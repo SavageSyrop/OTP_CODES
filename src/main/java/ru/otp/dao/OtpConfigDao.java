@@ -6,5 +6,4 @@ import ru.otp.entities.OtpConfig;
 import java.util.Optional;
 
 public interface OtpConfigDao extends JpaRepository<OtpConfig, String> {
-    Optional<OtpConfig> findFirst();
 }

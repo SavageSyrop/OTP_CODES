@@ -22,10 +22,10 @@ public class UserServiceImpl implements UserService {
     private MailService mailService;
 
     @Override
-    public UserDetails loadUserByUsername(String username) {
-        Optional<User> user = userDao.findByUsername(username);
+    public UserDetails loadUserByUsername(String email) {
+        Optional<User> user = userDao.findByEmail(email);
         if (user.isEmpty()) {
-            throw new EntityNotFoundException(username);
+            throw new EntityNotFoundException(email);
         }
         return new UserPrincipal(user.get());
     }

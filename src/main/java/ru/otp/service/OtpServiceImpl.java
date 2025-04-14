@@ -53,7 +53,7 @@ public class OtpServiceImpl implements OtpService {
         for (OtpCode otpCode : otpCodes) {
             if (ACTIVE.equals(otpCode.getOtpCodeStatus())) {
                 long currentTime = System.currentTimeMillis();
-                OtpConfig config = otpConfigDao.findFirst().get();
+                OtpConfig config = otpConfigDao.findAll().getFirst();
                 if (currentTime - otpCode.getCreationTime() - config.getExpiresInMillis() > 0) {
                     if (otpCode.getOtpCode().equals(code)) {
                         otpCode.setOtpCodeStatus(USED);
@@ -74,7 +74,7 @@ public class OtpServiceImpl implements OtpService {
     public void createOtp(OtpType otpType) throws Exception {
         OtpCode code = new OtpCode();
         long currentTime = System.currentTimeMillis();
-        OtpConfig config = otpConfigDao.findFirst().get();
+        OtpConfig config = otpConfigDao.findAll().getFirst();
         User currentUser = ((UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser();
 
         code.setOtpType(otpType);
@@ -105,7 +105,7 @@ public class OtpServiceImpl implements OtpService {
 
     @Override
     public boolean validateFile(String code) {
-        OtpConfig config = otpConfigDao.findFirst().get();
+        OtpConfig config = otpConfigDao.findAll().getFirst();
         User currentUser = ((UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser();
 
         return fileService.validate(currentUser, code, config.getExpiresInMillis());

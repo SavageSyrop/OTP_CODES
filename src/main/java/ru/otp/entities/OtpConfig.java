@@ -2,6 +2,7 @@ package ru.otp.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 public class OtpConfig implements Indexable<Long> {
+    @Id
     @Column
     private Long configVersion;
     @Column

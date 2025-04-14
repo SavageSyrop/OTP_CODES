@@ -15,7 +15,7 @@ import ru.otp.entities.User;
 @Slf4j
 public class PhoneService {
 
-    @Value("${pring.smpp.host}")
+    @Value("${spring.smpp.host}")
     private String host;
     @Value("${spring.smpp.port}")
     private Integer port;

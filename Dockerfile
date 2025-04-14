@@ -1,4 +1,4 @@
-#
+# TODO поменяй тут на джаву 21
 # Build stage
 #
 FROM eclipse-temurin:17-jdk-jammy AS build
