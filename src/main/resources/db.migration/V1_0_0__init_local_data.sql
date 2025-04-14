@@ -53,7 +53,9 @@ for each row EXECUTE function check_single_config();
 create table otp_codes
 (
     id                  BIGSERIAL           NOT NULL,
+    creation_time       bigint      not null,
     otp_code            VARCHAR(128) unique not null,
+    otp_type            VARCHAR(128) not null,
     otp_code_status     VARCHAR(128)        not null,
     user_id bigint REFERENCES users (id) on delete cascade,
     CONSTRAINT otp_codes_pk primary key (id)

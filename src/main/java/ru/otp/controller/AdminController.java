@@ -20,7 +20,6 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/admin")
-@PreAuthorize("hasAuthority('ADMIN')")
 public class AdminController {
 
     @Autowired
@@ -35,6 +34,7 @@ public class AdminController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/config}")
     public void editConfig(@RequestBody OtpConfigDTO dto, HttpServletResponse httpServletResponse) {
+        log.info("Config change initiated");
         OtpConfig oldConfig = otpService.getConfig();
         OtpConfig newConfig = new OtpConfig();
 
@@ -49,7 +49,8 @@ public class AdminController {
             newConfig.setOtpCodeLength(dto.getExipesAfterMillis());
         }
         otpService.deleteConfig(oldConfig);
-        otpService.save(newConfig);
+        otpService.saveConfig(newConfig);
+        log.info("Config changed");
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -57,10 +58,11 @@ public class AdminController {
     public List<UserDTO> getAllUsers(HttpServletResponse httpServletResponse) {
         List<User> users = userService.getAll();
         List<UserDTO> userDTOS = new ArrayList<>();
-        for (User user: users) {
+        for (User user : users) {
             userDTOS.add(convertToDto(user));
         }
         httpServletResponse.setStatus(200);
+        log.info("Requested full user list");
         return userDTOS;
     }
 
@@ -69,6 +71,7 @@ public class AdminController {
     public void deleteUser(@PathVariable Long userId, HttpServletResponse httpServletResponse) {
         User user = userService.getById(userId);
         userService.deleteById(userId);
+        log.info("User with id " + userId + " deleted");
     }
 
     private UserDTO convertToDto(User user) throws ParseException {

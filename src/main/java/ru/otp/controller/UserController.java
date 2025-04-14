@@ -33,12 +33,13 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/login")
-    public void login(@RequestBody AuthorizationDTO authorizationDTO,HttpServletResponse httpServletResponse) throws JsonProcessingException {
+    public void login(@RequestBody AuthorizationDTO authorizationDTO, HttpServletResponse httpServletResponse) throws JsonProcessingException {
         UserPrincipal user = (UserPrincipal) userService.loadUserByUsername(authorizationDTO.getEmail());
         if (Hashing.sha256()
                 .hashString(authorizationDTO.getPassword(), StandardCharsets.UTF_8).toString().equals(user.getUser().getPassword())) {
             String jwtValue = jwtTokenProvider.createJWT(user.getUser().getId(), user.getUsername(), user.getPassword());
             httpServletResponse.setHeader(HttpHeaders.AUTHORIZATION, jwtValue);
+            log.info("Logged in " + user.getUsername());
         } else {
             throw new AuthorizationServiceException("Invalid credentials");
         }
@@ -58,6 +59,7 @@ public class UserController {
         user.setPassword(Hashing.sha256()
                 .hashString(authorizationDTO.getPassword(), StandardCharsets.UTF_8)
                 .toString());
-        userService.saveNewUser(user);
+        user = userService.saveNewUser(user);
+        log.info("Registered  " + user.getId());
     }
 }
