@@ -19,11 +19,3 @@ services:
       - POSTGRES_INITDB_ARGS=--auth-host=trust
     volumes:
       - db-data-otp:/var/lib/postgresql/data
-  app:
-    container_name: otp
-    image: otp
-    build: ./
-    ports:
-      - "8089:8089"
-    depends_on:
-      - otpdb
