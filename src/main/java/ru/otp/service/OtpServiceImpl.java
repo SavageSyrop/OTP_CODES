@@ -54,7 +54,7 @@ public class OtpServiceImpl implements OtpService {
             if (ACTIVE.equals(otpCode.getOtpCodeStatus())) {
                 long currentTime = System.currentTimeMillis();
                 OtpConfig config = otpConfigDao.findFirst().get();
-                if (currentTime - otpCode.getCreationTime() - config.getExipesAfterMillis() > 0) {
+                if (currentTime - otpCode.getCreationTime() - config.getExpiresInMillis() > 0) {
                     if (otpCode.getOtpCode().equals(code)) {
                         otpCode.setOtpCodeStatus(USED);
                     }
@@ -108,7 +108,7 @@ public class OtpServiceImpl implements OtpService {
         OtpConfig config = otpConfigDao.findFirst().get();
         User currentUser = ((UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser();
 
-        return fileService.validate(currentUser, code, config.getExipesAfterMillis());
+        return fileService.validate(currentUser, code, config.getExpiresInMillis());
     }
 
     private String generateOtpCode(Long otpCodeLength) {

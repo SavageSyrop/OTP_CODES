@@ -44,7 +44,7 @@ public class AdminController {
             newConfig.setOtpCodeLength(dto.getOtpCodeLength());
         }
         if (dto.getExipesAfterMillis() == null) {
-            newConfig.setOtpCodeLength(oldConfig.getExipesAfterMillis());
+            newConfig.setOtpCodeLength(oldConfig.getExpiresInMillis());
         } else {
             newConfig.setOtpCodeLength(dto.getExipesAfterMillis());
         }

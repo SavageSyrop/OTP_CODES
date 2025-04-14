@@ -20,7 +20,7 @@ public class OtpConfig implements Indexable<Long> {
     @Column
     private Long otpCodeLength;
     @Column
-    private Long exipesAfterMillis;
+    private Long expiresInMillis;
 
     @Override
     public void setIndex(Long index) {
