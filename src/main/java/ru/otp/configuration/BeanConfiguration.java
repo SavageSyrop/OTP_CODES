@@ -10,15 +10,4 @@ public class BeanConfiguration {
     public ModelMapper modelMapper() {
         return new ModelMapper();
     }
-
-//    @Bean
-//    public CommonsRequestLoggingFilter requestLoggingFilter() {
-//        CommonsRequestLoggingFilter loggingFilter = new CommonsRequestLoggingFilter();
-//        loggingFilter.setIncludeHeaders(true);
-//        loggingFilter.setIncludeClientInfo(true);
-//        loggingFilter.setIncludeQueryString(true);
-//        loggingFilter.setIncludePayload(true);
-//        loggingFilter.setMaxPayloadLength(64000);
-//        return loggingFilter;
-//    }
 }

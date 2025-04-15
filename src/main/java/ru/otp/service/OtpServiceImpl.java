@@ -108,7 +108,7 @@ public class OtpServiceImpl implements OtpService {
     }
 
     private String generateOtpCode(Long otpCodeLength) {
-        int rand = new Random().nextInt((int) Math.pow(10, otpCodeLength-1), (int) Math.pow(10, otpCodeLength) - 1);
+        int rand = new Random().nextInt((int) Math.pow(10, otpCodeLength - 1), (int) Math.pow(10, otpCodeLength) - 1);
         return Integer.toString(rand);
     }
 }

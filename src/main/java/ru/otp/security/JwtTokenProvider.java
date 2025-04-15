@@ -13,7 +13,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import ru.otp.dao.OtpConfigDao;
-import ru.otp.entities.OtpConfig;
 import ru.otp.entities.UserPrincipal;
 import ru.otp.service.UserService;
 
@@ -34,7 +33,6 @@ public class JwtTokenProvider {
     private UserService userService;
 
     private Key secretKey;
-
 
     @PostConstruct
     public void init() {

@@ -6,7 +6,6 @@ import ru.otp.entities.User;
 import ru.otp.enums.OtpType;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface OtpCodesDao extends JpaRepository<OtpCode, Long> {
     List<OtpCode> findAllByOtpTypeAndUser(OtpType otpType, User user);

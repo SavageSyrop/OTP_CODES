@@ -14,7 +14,7 @@ import ru.otp.enums.OtpType;
 @Setter
 @ToString
 @NoArgsConstructor
-public class OtpCode extends AbstractEntity implements Indexable<Long>{
+public class OtpCode extends AbstractEntity implements Indexable<Long> {
     @Column
     private String otpCode;
     @Enumerated(EnumType.STRING)

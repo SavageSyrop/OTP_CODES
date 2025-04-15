@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class OtpConfigDTO  {
+public class OtpConfigDTO {
     private Long otpCodeLength;
     private Long expiresInMillis;
 }
