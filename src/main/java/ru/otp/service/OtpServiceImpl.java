@@ -38,7 +38,7 @@ public class OtpServiceImpl implements OtpService {
 
     @Override
     public void deleteConfig(OtpConfig oldConfig) {
-        otpConfigDao.save(oldConfig);
+        otpConfigDao.delete(oldConfig);
     }
 
     @Override

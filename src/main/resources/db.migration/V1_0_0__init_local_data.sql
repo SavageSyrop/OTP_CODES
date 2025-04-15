@@ -14,7 +14,7 @@ create or replace function check_single_admin()
 RETURNS trigger AS $$
 begin
     -- Проверяем количество записей в таблице
-    if (select count(*) from users where role = 'ADMIN') >= 1 then
+    if (select count(*) from users where role = 'ADMIN') >= 1  then
         raise exception 'Таблица может содержать только одну запись админа';
     END IF;
 
@@ -23,8 +23,8 @@ END;
 $$ LANGUAGE plpgsql;
 
 create trigger enforce_single_record_admin
-before insert or update on users
-for each row EXECUTE function check_single_admin();
+before insert or update on users for each row when (NEW.role = 'ADMIN')
+EXECUTE function check_single_admin();
 
 create TABLE otp_config
 (
@@ -47,7 +47,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 create trigger enforce_single_record_config
-before insert or update on otp_config
+before insert on otp_config
 for each row EXECUTE function check_single_config();
 
 create table otp_codes

@@ -11,5 +11,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class OtpConfigDTO  {
     private Long otpCodeLength;
-    private Long exipesAfterMillis;
+    private Long expiresInMillis;
 }

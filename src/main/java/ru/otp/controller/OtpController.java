@@ -29,7 +29,7 @@ public class OtpController {
     private ModelMapper modelMapper;
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/tg}")
+    @PostMapping("/tg")
     public void otpTG(HttpServletResponse httpServletResponse) throws Exception {
         otpService.createOtp(TG);
         httpServletResponse.setStatus(200);
@@ -37,7 +37,7 @@ public class OtpController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/phone}")
+    @PostMapping("/phone")
     public void otpPhone(HttpServletResponse httpServletResponse) throws Exception {
         otpService.createOtp(PHONE);
         httpServletResponse.setStatus(200);
@@ -45,7 +45,7 @@ public class OtpController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/mail}")
+    @PostMapping("/mail")
     public void otpMail(HttpServletResponse httpServletResponse) throws Exception {
         otpService.createOtp(MAIL);
         httpServletResponse.setStatus(200);
@@ -53,7 +53,7 @@ public class OtpController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/file}")
+    @PostMapping("/file")
     public void otpFile(HttpServletResponse httpServletResponse) throws Exception {
         otpService.createOtp(FILE);
         httpServletResponse.setStatus(200);
@@ -61,7 +61,7 @@ public class OtpController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/validate/tg}")
+    @PostMapping("/validate/tg")
     public void validateTg(@RequestParam String code, HttpServletResponse httpServletResponse) {
         if (otpService.validate(code, TG)) {
             httpServletResponse.setStatus(200);
@@ -73,7 +73,7 @@ public class OtpController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/validate/phone}")
+    @PostMapping("/validate/phone")
     public void validatePhone(@RequestParam String code, HttpServletResponse httpServletResponse) {
         if (otpService.validate(code, PHONE)) {
             log.info("Validation success");
@@ -85,7 +85,7 @@ public class OtpController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/validate/mail}")
+    @PostMapping("/validate/mail")
     public void validateMail(@RequestParam String code, HttpServletResponse httpServletResponse) {
         if (otpService.validate(code, MAIL)) {
             log.info("Validation success");
@@ -97,7 +97,7 @@ public class OtpController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/validate/file}")
+    @PostMapping("/validate/file")
     public void validateFile(@RequestParam String code, HttpServletResponse httpServletResponse) {
         if (otpService.validateFile(code)) {
             log.info("Validation success");

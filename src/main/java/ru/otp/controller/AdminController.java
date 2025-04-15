@@ -32,29 +32,23 @@ public class AdminController {
     private ModelMapper modelMapper;
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping("/config}")
+    @PostMapping("/config")
     public void editConfig(@RequestBody OtpConfigDTO dto, HttpServletResponse httpServletResponse) {
         log.info("Config change initiated");
         OtpConfig oldConfig = otpService.getConfig();
-        OtpConfig newConfig = new OtpConfig();
 
-        if (dto.getOtpCodeLength() == null) {
-            newConfig.setOtpCodeLength(oldConfig.getOtpCodeLength());
-        } else {
-            newConfig.setOtpCodeLength(dto.getOtpCodeLength());
+        if (dto.getOtpCodeLength() != null) {
+            oldConfig.setOtpCodeLength(dto.getOtpCodeLength());
         }
-        if (dto.getExipesAfterMillis() == null) {
-            newConfig.setOtpCodeLength(oldConfig.getExpiresInMillis());
-        } else {
-            newConfig.setOtpCodeLength(dto.getExipesAfterMillis());
+        if (dto.getExpiresInMillis() != null) {
+            oldConfig.setExpiresInMillis(dto.getExpiresInMillis());
         }
-        otpService.deleteConfig(oldConfig);
-        otpService.saveConfig(newConfig);
+        otpService.saveConfig(oldConfig);
         log.info("Config changed");
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @DeleteMapping("/getAllUsers}")
+    @GetMapping("/getAllUsers")
     public List<UserDTO> getAllUsers(HttpServletResponse httpServletResponse) {
         List<User> users = userService.getAll();
         List<UserDTO> userDTOS = new ArrayList<>();
@@ -67,7 +61,7 @@ public class AdminController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @DeleteMapping("/{userId}")
+    @DeleteMapping("/deleteUser/{userId}")
     public void deleteUser(@PathVariable Long userId, HttpServletResponse httpServletResponse) {
         User user = userService.getById(userId);
         userService.deleteById(userId);
