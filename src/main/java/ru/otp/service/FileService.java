@@ -3,6 +3,7 @@ package ru.otp.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.otp.entities.User;
+import ru.otp.exceptions.OtpValidationException;
 
 import java.io.*;
 
@@ -32,17 +33,19 @@ public class FileService {
                 String[] splitData = fileData.split(":");
                 String fileCode = splitData[0];
                 String creatingTime = splitData[1];
-                if (fileCode.equals(code) && Integer.parseInt(creatingTime) + exipesAfterMillis > System.currentTimeMillis()) {
+                long expiresIn = Long.parseLong(creatingTime) + exipesAfterMillis;
+                if (fileCode.equals(code) && expiresIn > System.currentTimeMillis()) {
+                    reader.close();
                     file.delete();
                     return true;
                 } else {
-                    return false;
+                    throw new OtpValidationException("Code is wrong or expired");
                 }
             } catch (IOException e) {
                 log.info("Error during reading file: " + e.getMessage());
             }
         } else {
-            return false;
+            throw new OtpValidationException("Code not found");
         }
         return false;
     }

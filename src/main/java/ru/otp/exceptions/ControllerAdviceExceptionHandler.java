@@ -77,6 +77,13 @@ public class ControllerAdviceExceptionHandler {
         return new ExceptionBody(e.getMessage());
     }
 
+    @ExceptionHandler(OtpValidationException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ExceptionBody handleException(OtpValidationException e) {
+        log.warn(e.toString());
+        return new ExceptionBody("OTP validation failed: " + e.getMessage());
+    }
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ExceptionBody handleException(Exception e) {

@@ -43,8 +43,8 @@ public class JwtTokenProvider {
 
     public String createJWT(Long userId, String username, String role) {
         Date now = new Date();
-        OtpConfig otpConfig = configDao.findAll().getFirst();
-        Date expiration = new Date(now.getTime() + otpConfig.getExpiresInMillis());
+
+        Date expiration = new Date(now.getTime() + Long.parseLong(jwtProperties.getTokenDuration()));
 
         Claims claims = Jwts.claims()
                 .subject(username)

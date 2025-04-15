@@ -5,10 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.otp.service.OtpService;
 import ru.otp.service.UserService;
 
@@ -29,7 +26,7 @@ public class OtpController {
     private ModelMapper modelMapper;
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/tg")
+    @GetMapping("/tg")
     public void otpTG(HttpServletResponse httpServletResponse) throws Exception {
         otpService.createOtp(TG);
         httpServletResponse.setStatus(200);
@@ -37,7 +34,7 @@ public class OtpController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/phone")
+    @GetMapping("/phone")
     public void otpPhone(HttpServletResponse httpServletResponse) throws Exception {
         otpService.createOtp(PHONE);
         httpServletResponse.setStatus(200);
@@ -45,7 +42,7 @@ public class OtpController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/mail")
+    @GetMapping("/mail")
     public void otpMail(HttpServletResponse httpServletResponse) throws Exception {
         otpService.createOtp(MAIL);
         httpServletResponse.setStatus(200);
@@ -53,7 +50,7 @@ public class OtpController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/file")
+    @GetMapping("/file")
     public void otpFile(HttpServletResponse httpServletResponse) throws Exception {
         otpService.createOtp(FILE);
         httpServletResponse.setStatus(200);
@@ -61,50 +58,34 @@ public class OtpController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/validate/tg")
+    @PostMapping("/tg/validate")
     public void validateTg(@RequestParam String code, HttpServletResponse httpServletResponse) {
-        if (otpService.validate(code, TG)) {
-            httpServletResponse.setStatus(200);
-            log.info("Validation success");
-        } else {
-            log.info("Validation error");
-            httpServletResponse.setStatus(500);
-        }
+        otpService.validate(code, TG);
+        httpServletResponse.setStatus(200);
+        log.info("Validation success");
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/validate/phone")
+    @PostMapping("/phone/validate")
     public void validatePhone(@RequestParam String code, HttpServletResponse httpServletResponse) {
-        if (otpService.validate(code, PHONE)) {
-            log.info("Validation success");
-            httpServletResponse.setStatus(200);
-        } else {
-            log.info("Validation error");
-            httpServletResponse.setStatus(500);
-        }
+        otpService.validate(code, PHONE);
+        log.info("Validation success");
+        httpServletResponse.setStatus(200);
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/validate/mail")
+    @PostMapping("/mail/validate")
     public void validateMail(@RequestParam String code, HttpServletResponse httpServletResponse) {
-        if (otpService.validate(code, MAIL)) {
-            log.info("Validation success");
-            httpServletResponse.setStatus(200);
-        } else {
-            log.info("Validation error");
-            httpServletResponse.setStatus(500);
-        }
+        otpService.validate(code, MAIL);
+        log.info("Validation success");
+        httpServletResponse.setStatus(200);
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/validate/file")
+    @PostMapping("/file/validate")
     public void validateFile(@RequestParam String code, HttpServletResponse httpServletResponse) {
-        if (otpService.validateFile(code)) {
-            log.info("Validation success");
-            httpServletResponse.setStatus(200);
-        } else {
-            log.info("Validation error");
-            httpServletResponse.setStatus(500);
-        }
+        otpService.validateFile(code);
+        log.info("Validation success");
+        httpServletResponse.setStatus(200);
     }
 }

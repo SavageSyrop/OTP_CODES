@@ -11,4 +11,6 @@ public class JwtProperties {
     private String secretKey;
     @Value("${security.jwt.tokenPrefix}")
     private String tokenPrefix;
+    @Value("${security.jwt.tokenDuration}")
+    private String tokenDuration;
 }

@@ -10,6 +10,7 @@ import ru.otp.entities.OtpConfig;
 import ru.otp.entities.User;
 import ru.otp.entities.UserPrincipal;
 import ru.otp.enums.OtpType;
+import ru.otp.exceptions.OtpValidationException;
 
 import java.util.List;
 import java.util.Random;
@@ -37,37 +38,31 @@ public class OtpServiceImpl implements OtpService {
     }
 
     @Override
-    public void deleteConfig(OtpConfig oldConfig) {
-        otpConfigDao.delete(oldConfig);
-    }
-
-    @Override
     public OtpConfig getConfig() {
         return otpConfigDao.findAll().getFirst();
     }
 
     @Override
-    public boolean validate(String code, OtpType otpType) {
+    public void validate(String code, OtpType otpType) {
         User currentUser = ((UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser();
         List<OtpCode> otpCodes = otpCodesDao.findAllByOtpTypeAndUser(otpType, currentUser);
         for (OtpCode otpCode : otpCodes) {
             if (ACTIVE.equals(otpCode.getOtpCodeStatus())) {
                 long currentTime = System.currentTimeMillis();
                 OtpConfig config = otpConfigDao.findAll().getFirst();
-                if (currentTime - otpCode.getCreationTime() - config.getExpiresInMillis() > 0) {
+                if (otpCode.getCreationTime() + config.getExpiresInMillis() > currentTime) {
                     if (otpCode.getOtpCode().equals(code)) {
                         otpCode.setOtpCodeStatus(USED);
+                        otpCodesDao.save(otpCode);
+                        return;
                     }
                 } else {
                     otpCode.setOtpCodeStatus(EXPIRED);
                     otpCodesDao.save(otpCode);
-                    continue;
                 }
-                otpCodesDao.save(otpCode);
-                return true;
             }
         }
-        return false;
+        throw new OtpValidationException("Code not found or expired");
     }
 
     @Override
@@ -85,14 +80,17 @@ public class OtpServiceImpl implements OtpService {
         switch (otpType) {
             case TG: {
                 tgService.sendOtpMessage(currentUser, code.getOtpCode());
+                otpCodesDao.save(code);
                 break;
             }
             case PHONE: {
                 phoneService.sendOtpMessage(currentUser, code.getOtpCode());
+                otpCodesDao.save(code);
                 break;
             }
             case MAIL: {
                 mailService.sendOtpMessage(currentUser, code.getOtpCode());
+                otpCodesDao.save(code);
                 break;
             }
             case FILE: {
@@ -100,19 +98,17 @@ public class OtpServiceImpl implements OtpService {
                 break;
             }
         }
-        otpCodesDao.save(code);
     }
 
     @Override
-    public boolean validateFile(String code) {
+    public void validateFile(String code) {
         OtpConfig config = otpConfigDao.findAll().getFirst();
         User currentUser = ((UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser();
-
-        return fileService.validate(currentUser, code, config.getExpiresInMillis());
+        fileService.validate(currentUser, code, config.getExpiresInMillis());
     }
 
     private String generateOtpCode(Long otpCodeLength) {
-        int rand = new Random().nextInt((int) Math.pow(10, otpCodeLength), (int) Math.pow(10, otpCodeLength + 1) - 1);
+        int rand = new Random().nextInt((int) Math.pow(10, otpCodeLength-1), (int) Math.pow(10, otpCodeLength) - 1);
         return Integer.toString(rand);
     }
 }

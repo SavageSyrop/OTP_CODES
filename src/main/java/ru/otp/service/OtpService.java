@@ -8,14 +8,12 @@ import ru.otp.enums.OtpType;
 public interface OtpService {
     OtpConfig saveConfig(OtpConfig newConfig);
 
-    void deleteConfig(OtpConfig oldConfig);
-
     OtpConfig getConfig();
 
-    boolean validate(String code, OtpType otpType);
+    void validate(String code, OtpType otpType);
 
     void createOtp(OtpType otpType) throws Exception;
 
-    boolean validateFile(String code);
+    void validateFile(String code);
 }
 
