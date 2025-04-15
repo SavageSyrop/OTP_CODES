@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean adminAlreadyRegistered() {
-        Optional<User> admin = userDao.findFirstByRole(RoleType.ADMIN.name());
+        Optional<User> admin = userDao.findFirstByRole(RoleType.ADMIN);
         return !admin.isEmpty();
     }
 

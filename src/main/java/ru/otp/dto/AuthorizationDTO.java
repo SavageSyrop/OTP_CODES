@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import ru.otp.enums.RoleType;
 
 
 @Getter
@@ -13,9 +14,8 @@ import lombok.NoArgsConstructor;
 public class AuthorizationDTO {
     @Email
     private String email;
-    @Size(min = 8, message = "password should have at least 8 characters")
     private String password;
     private String phoneNumber;
     private String tgId;
-    private String roleType;
+    private RoleType roleType;
 }

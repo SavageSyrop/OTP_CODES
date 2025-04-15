@@ -48,12 +48,12 @@ public class UserController {
     @PostMapping("/register")
     @Transactional
     public void registerNewUser(@RequestBody AuthorizationDTO authorizationDTO) throws Exception {
-        if (RoleType.ADMIN.name().equals(authorizationDTO.getRoleType()) && userService.adminAlreadyRegistered()) {
+        if (RoleType.ADMIN.equals(authorizationDTO.getRoleType()) && userService.adminAlreadyRegistered()) {
             throw new IllegalArgumentException("Admin already exists");
         }
         User user = new User();
         user.setEmail(authorizationDTO.getEmail());
-        user.setRole(RoleType.valueOf(authorizationDTO.getRoleType()));
+        user.setRole(authorizationDTO.getRoleType());
         user.setPhoneNumber(authorizationDTO.getPhoneNumber());
         user.setTgId(authorizationDTO.getTgId());
         user.setPassword(Hashing.sha256()

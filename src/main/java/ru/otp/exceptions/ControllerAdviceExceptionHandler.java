@@ -81,6 +81,6 @@ public class ControllerAdviceExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ExceptionBody handleException(Exception e) {
         log.warn(e.toString());
-        return new ExceptionBody("Internal error");
+        return new ExceptionBody("Internal error: " + e.getMessage());
     }
 }
